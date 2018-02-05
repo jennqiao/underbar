@@ -95,8 +95,6 @@
       if (test(item)) {
         filteredList.push(item);
       }
-
-
     })
 
     return filteredList;
@@ -122,56 +120,40 @@
 
     if (arguments.length > 1) {
 
-      var booleanArray = [];
+      var booleans = [];
 
       _.each(array, function(item){
-        if (iterator(item)) {
-          booleanArray.push(true)
-        }
-        else {
-          booleanArray.push(false)
-        }
+        booleans.push(iterator(item));
       })
         
-        var positionTrue= _.indexOf(booleanArray, true);
-        var positionFalse= _.indexOf(booleanArray, false);
+      var positionTrue= _.indexOf(booleans, true);
+      var positionFalse= _.indexOf(booleans, false);
 
-        var uniqArray = [array[positionTrue], array[positionFalse]];
+      var uniqArray = [array[positionTrue], array[positionFalse]];
      
-
       return uniqArray;
 
-
-    }
-    else {
+    } else {
 
       var uniqs = [];
 
-    for (var i=0; i<array.length; i++) {
-      var repeated = false;
+      for (var i=0; i<array.length; i++) {
+        var repeated = false;
 
-      for (var t=0; t<uniqs.length; t++) {
-        if (array[i]===uniqs[t]) {
-          repeated = true;
-
+        for (var t=0; t<uniqs.length; t++) {
+          if (array[i]===uniqs[t]) {
+            repeated = true;
+          }
         }
-
-
-      }
       
       if (repeated===false) {
         uniqs.push(array[i]);
       }
 
-
-    }
+      }
     return uniqs;
 
     }
-    
-
-  
-  
   };
 
 
@@ -242,9 +224,7 @@
 
       return accumulator;
 
-    }
-
-    else {
+    } else {
 
       var accumulator = collection[0];
       var newCollection = collection.slice(1, collection.length);
@@ -254,12 +234,7 @@
       })
 
       return accumulator;
-
     }
-
-
-    //else 
-
   };
 
   // Determine if the array or object contains a given value (using `===`).
