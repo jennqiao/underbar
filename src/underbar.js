@@ -122,6 +122,25 @@
 
     if (arguments.length > 1) {
 
+      var booleanArray = [];
+
+      _.each(array, function(item){
+        if (iterator(item)) {
+          booleanArray.push(true)
+        }
+        else {
+          booleanArray.push(false)
+        }
+      })
+        
+        var positionTrue= _.indexOf(booleanArray, true);
+        var positionFalse= _.indexOf(booleanArray, false);
+
+        var uniqArray = [array[positionTrue], array[positionFalse]];
+     
+
+      return uniqArray;
+
 
     }
     else {
@@ -210,6 +229,37 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+
+    //if arguments length is greater than 2, start with accumulator
+
+    if (arguments.length> 2) {
+      //call iterator for each item
+      
+      _.each(collection, function(item) {
+        accumulator = iterator(accumulator, item);
+
+      })
+
+      return accumulator;
+
+    }
+
+    else {
+
+      var accumulator = collection[0];
+      var newCollection = collection.slice(1, collection.length);
+
+      _.each(newCollection, function(item) {
+        accumulator = iterator(accumulator, item);
+      })
+
+      return accumulator;
+
+    }
+
+
+    //else 
+
   };
 
   // Determine if the array or object contains a given value (using `===`).
