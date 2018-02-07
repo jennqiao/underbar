@@ -253,12 +253,55 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+
+    if (arguments.length < 2) {
+      var iterator = _.identity;
+    }
+
+    return _.reduce(collection, function(allMatch, item) {
+
+      if (!allMatch) {
+        return false;
+      }
+      if (iterator(item)) {
+        return true;
+      } else {
+        return false;
+      }
+      
+    }, true);
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+
+  
+    //if every one of them fails, then return false
+    //otherwise, return true
+
+     if (arguments.length < 2) {
+      var iterator = _.identity;
+    }
+
+    var allFail = _.every(collection, function(item) {
+      return !iterator(item);
+    })
+
+    if (allFail) {
+      return false;
+    } else {
+      return true;
+    }
+    //else return true
+
+
+
+
+
+ 
   };
 
 
@@ -281,11 +324,41 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+
+    if (arguments.length > 1) {
+
+      for (var i=1; i<arguments.length; i++) {
+        _.each(arguments[i], function(item, key) {
+          obj[key] = item;
+        });
+
+      }
+
+      return obj;
+    }
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+
+    //if a key in obj does not exist, then obj[key] is item
+
+     if (arguments.length > 1) {
+
+      for (var i=1; i<arguments.length; i++) {
+        _.each(arguments[i], function(item, key) {
+          if (obj[key]===undefined) {
+             obj[key] = item;
+          }
+         
+        });
+
+      }
+
+      return obj;
+    }
+
   };
 
 
@@ -338,6 +411,29 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+
+
+    if (arguments.length > 2) {
+      var parameters = [];
+      for (var i=2; i<arguments.length; i++) {
+        parameters.push(arguments[i]);
+
+      }
+
+      func.apply(null, parameters);
+      setTimeout(func,wait);
+
+
+    } else {
+      setTimeout(func,wait);
+
+    }
+
+
+
+
+
+
   };
 
 
