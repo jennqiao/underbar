@@ -402,6 +402,45 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+
+    var cache = {};
+
+    return function() {
+      //if arguments match a key in cache
+      //return the arguments value
+      //else
+      //run func with the arguments
+      //record as cache[arguments] = result 
+      /*
+      var argumentsArray = _.map(arguments, function(item) {
+        return item;
+
+      }) */
+
+      var argumentsArray = Array.prototype.slice.call(arguments);
+      var argumentsKeyString = JSON.stringify(argumentsArray);
+
+      console.log(argumentsArray);
+
+      if (_.contains(cache, cache[argumentsKeyString])) {
+        return cache[argumentsKeyString];
+      } else {
+        cache[argumentsKeyString] = func.apply(this, argumentsArray);
+        return cache[argumentsKeyString];
+      }
+ 
+
+    }
+
+    //store a function 
+
+    //when function is called
+
+    //create newarray of parameters/arguments
+    //if newarray does not match current funcs arguments
+    //run function
+    //store arguments as new array
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -448,6 +487,29 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+
+    var randomArray = [];
+    var randomNumbers = [];
+
+    while (randomArray.length !== array.length) {
+
+      var randomNumber = getRandomInt(0, array.length);
+      if (!_.contains(randomNumbers, randomNumber)) {
+        randomNumbers.push(randomNumber);
+        randomArray.push(array[randomNumber]);
+      }
+
+    }
+
+    return randomArray;
+
+
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+    }
+
   };
 
 
