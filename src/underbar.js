@@ -406,16 +406,6 @@
     var cache = {};
 
     return function() {
-      //if arguments match a key in cache
-      //return the arguments value
-      //else
-      //run func with the arguments
-      //record as cache[arguments] = result 
-      /*
-      var argumentsArray = _.map(arguments, function(item) {
-        return item;
-
-      }) */
 
       var argumentsArray = Array.prototype.slice.call(arguments);
       var argumentsKeyString = JSON.stringify(argumentsArray);
@@ -431,15 +421,6 @@
  
 
     }
-
-    //store a function 
-
-    //when function is called
-
-    //create newarray of parameters/arguments
-    //if newarray does not match current funcs arguments
-    //run function
-    //store arguments as new array
 
   };
 
@@ -524,6 +505,44 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+
+     var newArray = [];
+
+    if (typeof(functionOrKey)==="function") {
+
+     
+
+      for (var i=0; i<collection.length; i++) {
+
+        newArray.push(functionOrKey.apply(collection[i]));
+
+      }
+
+    }
+
+    else {
+
+      //var method = functionOrKey.slice(1, functionOrKey.length-1);
+
+
+      for (var i=0; i<collection.length; i++) {
+
+
+        //newArray.push(eval("'"+collection[i]+"'."+functionOrKey+"()"));
+
+        newArray.push(collection[i][functionOrKey]());
+
+
+      }
+
+
+
+    }
+
+     return newArray;
+
+
+
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -531,6 +550,29 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+
+
+    if (typeof(iterator)==='string') {
+
+    //if iterator is string
+    //go through collection's key/value based on iterator as key
+    //sort ascending order by value
+    }
+
+     var arrayOfValues = [];
+
+      for (var i=0; i<collection.length; i++) {
+
+        console.log(collection[i]);
+         console.log(collection[i][iterator]);
+
+        arrayOfValues.push(collection[i][iterator]);
+      }
+
+      arrayOfValues.sort();
+      return arrayOfValues;
+
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -539,6 +581,30 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+
+    //create an empty array
+    //loop through each of the arrays in the arguments
+    //loop through each item in array
+    //for each item in the inner loop, push to a new array
+    //push that array into the bigger array
+    //return that array
+
+    var overallArray = [];
+    for (var i=0; i<arguments[0].length; i++) {
+
+      var innerArray = [];
+      for (var t=0; t<arguments.length; t++) {
+
+        innerArray.push(arguments[t][i]);
+      }
+      overallArray.push(innerArray);
+
+
+
+    }
+    return overallArray;
+
+
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -546,16 +612,108 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+
+    //create empty array
+    //for each of the elements, check if it is an array
+    //if not, push it into the empty array
+    //if it is, for each of its elements, check if it is an array
+
+    var flatArray = [];
+
+    var checkArray = function(array) {
+
+      for (var i=0; i<array.length; i++) {
+
+        if (Array.isArray(array[i])) {
+          checkArray(array[i]);
+        }
+        else {
+          flatArray.push(array[i])
+        }
+      }
+
+
+    }
+
+    checkArray(nestedArray);
+    return flatArray;
+
+
+
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+
+    //for each element in the first array
+    //if every array in the arguments has that element
+    //push to new array
+
+    var sharedArray = [];
+
+    for (var i=0; i<arguments[0].length; i++) {
+      
+      var isShared = false;
+      var counter = 0;
+
+      for (var t=0; t<arguments.length; t++) {
+
+         isShared = _.contains(arguments[t], arguments[0][i]);
+
+         if (isShared) {
+          counter ++;
+         }
+      }
+
+      if (counter ===arguments.length) {
+        sharedArray.push(arguments[0][i]);
+      }
+
+
+    }
+
+    return sharedArray;
+
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+
+    //create empty array
+    //for each element in the first array
+    //if any of the other arrays contains that element, set isDifferent to false
+    //if true, then push to empty array
+
+    var differentArray = [];
+  
+
+    for (var i=0; i<array.length; i++) {
+
+        var hasElement = false;
+        var count = 0;
+
+      for (var t=1; t<arguments.length; t++) {
+
+        hasElement = _.contains(arguments[t], array[i]);
+        if (hasElement) {
+          count ++;
+        }
+
+      }
+
+      if (count===0) {
+        differentArray.push(array[i]);
+      }
+
+
+
+    }
+    return differentArray;
+
+
+
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
