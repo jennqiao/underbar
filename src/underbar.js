@@ -38,12 +38,17 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+   
+/*
     if (n === undefined) {
       return array.pop();
     }
     else {
       return n === 0 ? [] : array.slice(-n);
     }
+    */
+
+    return n === undefined ? array[array.length-1] : array.slice(Math.max(0, array.length-n));
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -118,6 +123,8 @@
     //for each item in the array
     //if it does not exist in uniqs array, push it there
 
+    
+
     if (arguments.length > 1) {
 
       var booleans = [];
@@ -154,6 +161,40 @@
     return uniqs;
 
     }
+    
+
+
+    //more time hog solution
+
+    /*
+
+    var results = [];
+
+    for (var i=0; i<array.length; i++) {
+      if (results.indexOf(array[i]) < 0) {
+        results.push(array[i]);
+      }
+    }
+    return results;
+
+    
+
+    //more complex, but time sensitive one
+
+    var uniq = {};
+    var results = [];
+
+    for (var i=0; i<array.length; i++) {
+      uniq[array[i]] = array[i];
+    }
+
+    for (var key in uniq) {
+      results.push(uniq[key]);
+    }
+
+    return results;
+    */
+
   };
 
 
@@ -222,8 +263,6 @@
 
       })
 
-      return accumulator;
-
     } else {
 
       var accumulator = collection[0];
@@ -233,8 +272,10 @@
         accumulator = iterator(accumulator, item);
       })
 
-      return accumulator;
     }
+
+    return accumulator; 
+
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -258,6 +299,14 @@
       var iterator = _.identity;
     }
 
+    //or
+
+    /*
+
+    var iterator = iterator || _.identity;
+
+    
+
     return _.reduce(collection, function(allMatch, item) {
 
       if (!allMatch) {
@@ -270,6 +319,15 @@
       }
       
     }, true);
+    */
+
+    return !!_.reduce(collection, function(trueSoFar, item) {
+
+      return trueSoFar && iterator(item);
+
+
+    }, true);
+
 
   };
 
@@ -407,15 +465,12 @@
 
     return function() {
 
-      var argumentsArray = Array.prototype.slice.call(arguments);
-      var argumentsKeyString = JSON.stringify(argumentsArray);
-
-      console.log(argumentsArray);
+      var argumentsKeyString = JSON.stringify(arguments);
 
       if (_.contains(cache, cache[argumentsKeyString])) {
         return cache[argumentsKeyString];
       } else {
-        cache[argumentsKeyString] = func.apply(this, argumentsArray);
+        cache[argumentsKeyString] = func.apply(this, arguments);
         return cache[argumentsKeyString];
       }
  
@@ -553,11 +608,33 @@
 
 
     if (typeof(iterator)==='string') {
+      
+
+      collection.sort(function(a,b) {
+        return a[iterator] - b[iterator];
+      })
+     
+
 
     //if iterator is string
     //go through collection's key/value based on iterator as key
     //sort ascending order by value
     }
+
+    else {
+
+     collection.sort(function(a,b) {
+        return iterator(a) - iterator(b);
+      })
+
+
+
+    }
+
+    return collection;
+
+
+/*
 
      var arrayOfValues = [];
 
@@ -572,6 +649,7 @@
       arrayOfValues.sort();
       return arrayOfValues;
 
+*/
 
   };
 
@@ -722,5 +800,81 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+
+
+    var isWaiting = false;
+    var setReminder = false;
+
+
+    var throttledFunction = function() {
+
+      var reminderFunction = function (delay) {
+        if (!setReminder) {
+         setReminder = true;
+         setTimeout(function() {
+          throttledFunction();
+          setReminder=false;
+
+          }, delay)
+        }
+
+      }
+
+      if (!isWaiting) {
+        isWaiting = true;
+        var value = func();
+        var previous = Date.now();
+
+        setTimeout(function(){ 
+          isWaiting= false;
+        }, wait);
+        
+        return value;
+
+       } else {
+
+        var now = Date.now();
+        var delay = wait - (now - previous);
+
+        reminderFunction(delay);
+        return value;
+
+       }
+    }
+
+    return throttledFunction;    
+    
+    /*
+
+    Set isWaiting is false
+    if isWaiting is false
+      trigger function, set eturn value, 
+      When called, set waiting period to true
+      set a delay/wait - turn back waiting period to false after delay
+    Set timeout to wait period, then switch it back to false
+    return return value
+
+    //trigger function, remember return value
+    //set interval of wait period
+    //if wait period is not over, return existing return value
+    //can you return something and still keep running?
+
+
+    var alreadyCalled = false;
+    var result;
+
+    // TIP: We'll return a new function that delegates to the old one, but only
+    // if it hasn't been called before.
+    return function() {
+      if (!alreadyCalled) {
+        // TIP: .apply(this, arguments) is the standard way to pass on all of the
+        // infromation from one function call to another.
+        result = func.apply(this, arguments);
+        alreadyCalled = true;
+      }
+      // The new function always returns the originally computed result.
+      return result;
+    */
+
   };
 }());
